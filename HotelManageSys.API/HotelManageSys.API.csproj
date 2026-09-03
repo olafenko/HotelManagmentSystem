@@ -30,6 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Auth\Handlers\" />
+    <Folder Include="Features\Auth\Providers\" />
     <Folder Include="Features\ReservationAdditionalOffers\Validators\Queries\" />
     <Folder Include="Features\RoomTypes\Services\" />
     <Folder Include="Features\Workers\Validators\Commands\" />
