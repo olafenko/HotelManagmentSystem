@@ -52,6 +52,9 @@ The entire backend infrastructure (API & Database) is fully containerized.
    docker-compose up --build -d
    ```
 **2. Run the mobile app:**
+
+>  You need to have an Android Emulator (like Android Studio) or iOS Simulator (like Xcode) running, or a physical device connected before executing the commands below
+
    ```bash
    cd HotelMobile
    npm install
