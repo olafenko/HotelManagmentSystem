@@ -2,7 +2,7 @@
 
 namespace HotelManageSys.API.Features.Auth.Services;
 
-public interface IJwtService
+public interface IJwtProvider
 {
     string GenerateToken(Worker worker);
 }

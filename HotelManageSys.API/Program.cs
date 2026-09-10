@@ -19,13 +19,16 @@ using HotelManageSys.API.Models.Data;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 
 using HotelManageSys.API.Behaviors;
+using HotelManageSys.API.Features.Auth.Services;
 using HotelManageSys.API.Middleware;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HotelManageSys.API
 {
@@ -54,6 +57,27 @@ namespace HotelManageSys.API
                 options.SuppressModelStateInvalidFilter = true;
             });
 
+
+            builder.Services.AddAuthorization();
+            
+            builder.Services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ClockSkew = TimeSpan.Zero,
+                        ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
+                        ValidAudience = builder.Configuration["JwtConfig:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:SecretKey"])),
+                        
+                    };
+
+                });
+
             TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 
             RegisterProviders(builder);
@@ -77,6 +101,7 @@ namespace HotelManageSys.API
             
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
@@ -108,6 +133,7 @@ namespace HotelManageSys.API
             builder.Services.AddScoped<IWorkerService, WorkerService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddScoped<IReservationService, ReservationService>();
+            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
             
         }
 

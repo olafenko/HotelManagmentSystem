@@ -6,14 +6,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace HotelManageSys.API.Features.Auth.Services;
 
-public class JwtService : IJwtService
+public class JwtProvider : IJwtProvider
 {
 
     private readonly IConfiguration _config;
     private readonly string _secretKey;
     private readonly int _accessTokenExpirationMinutes;
 
-    public JwtService(IConfiguration config)
+    public JwtProvider(IConfiguration config)
     {
         _config = config;
         _secretKey = config.GetValue<string>("JwtConfig:SecretKey");
@@ -34,7 +34,7 @@ public class JwtService : IJwtService
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
 
         var signingCreds = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
-
+        
         var token = new JwtSecurityToken(
             
             issuer: _config["JwtConfig:Issuer"],
