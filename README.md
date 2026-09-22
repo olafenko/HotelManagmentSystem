@@ -2,7 +2,7 @@
 
 A cross-platform mobile application and backend API built for hotel staff daily operations.
 
-> **Status:** MVP is functional. The project is under development.
+MVP is functional. The project is under development.
 
 ## Screenshots
 
