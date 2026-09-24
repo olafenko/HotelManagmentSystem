@@ -37,6 +37,18 @@ namespace HotelManageSys.API.Features.Workers.Providers
             return await query.FirstOrDefaultAsync(w => w.IsActive && w.WorkerId == workerId, cancellationToken);
         }
 
+        public async Task<Worker?> GetWorkerByLoginAsync(string login, bool asNoTracking = true, CancellationToken cancellationToken = default)
+        {
+            IQueryable<Worker> query = _dbContext.Workers;
+
+            if (asNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+            
+            return await query.FirstOrDefaultAsync(w => w.IsActive && w.Login == login, cancellationToken);
+        }
+
         public async Task<bool> WorkerExistsByLogin(string login, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Workers.AnyAsync(w => w.Login == login && w.IsActive, cancellationToken);

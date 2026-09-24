@@ -2,7 +2,6 @@ using HotelManageSys.API.Features.Amenities.DTO_s;
 using HotelManageSys.API.Features.Amenities.Messages.Commands;
 using HotelManageSys.API.Features.Amenities.Messages.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManageSys.API.Controllers

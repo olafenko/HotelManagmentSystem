@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Security.Authentication;
 using System.Text.Json;
 using HotelManageSys.API.Exceptions;
 
@@ -63,18 +64,25 @@ public class ExceptionMiddleware
                     response.Status = 400;
                     break;
                 
-                case UnauthorizedAccessException:
+                case UnauthorizedAccessException unauthAccessEx:
+                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    response.Type = "Forbidden";
+                    response.Title = "Brak autoryzacji do wykonania akcji";
+                    response.Status = 403;
+                    break;
+                
+                case InvalidCredentialsException invCredEx:
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    response.Type = "Unauthorized";
-                    response.Title = "Brak autoryzacji";
+                    response.Type = "Invalid credentials";
+                    response.Title = invCredEx.Message;
                     response.Status = 401;
                     break;
 
                 case InvalidOperationException invalidOpEx:
-                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    response.Type = "Forbidden";
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.Type = "Business logic violation";
                     response.Title = invalidOpEx.Message;
-                    response.Status = 403;
+                    response.Status = 400;
                     break;
                 
                 case UniqueConstraintException uniqConstrEx:
