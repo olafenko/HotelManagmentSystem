@@ -1,3 +1,4 @@
+using HotelManageSys.API.Exceptions;
 using HotelManageSys.API.Features.Workers.DTO_s;
 using HotelManageSys.API.Features.Workers.Messages.Queries;
 using HotelManageSys.API.Features.Workers.Providers;
@@ -17,7 +18,11 @@ namespace HotelManageSys.API.Features.Workers.Handlers.Queries
 
         public async Task<WorkerDTO?> Handle(GetWorkerByIdQuery request, CancellationToken cancellationToken)
         {
-            return (await _workerProvider.GetWorkerByIdAsync(request.Id, true, cancellationToken))?.Adapt<WorkerDTO>();
+            var worker = await _workerProvider.GetWorkerByIdAsync(request.Id, true, cancellationToken);
+
+            if (worker == null) throw new NotFoundException("Worker", request.Id);
+            
+            return worker.Adapt<WorkerDTO>();
         }
     }
 }

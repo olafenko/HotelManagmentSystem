@@ -3,10 +3,12 @@ using HotelManageSys.API.Features.Reservations.Messages.Commands;
 using HotelManageSys.API.Features.Reservations.Messages.Queries;
 using HotelManageSys.API.Models.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManageSys.API.Controllers
 {
+    [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER) + "," + nameof(Role.WORKER))]
     [Route("api/[controller]")]
     [ApiController]
     public class ReservationsController : ControllerBase
@@ -17,7 +19,7 @@ namespace HotelManageSys.API.Controllers
         {
             _mediator = mediator;
         }
-
+        
         [HttpGet]
         [ProducesResponseType(typeof(List<ReservationDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllReservations([FromQuery] PaymentStatus? paymentStatus = null)
@@ -25,7 +27,7 @@ namespace HotelManageSys.API.Controllers
             var query = new GetAllReservationsQuery { PaymentStatus = paymentStatus };
             return Ok(await _mediator.Send(query));
         }
-
+        
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ReservationDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -37,7 +39,7 @@ namespace HotelManageSys.API.Controllers
 
             return result != null ? Ok(result) : NotFound($"Rezerwacja o ID {id} nie istnieje");
         }
-
+        
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -51,7 +53,7 @@ namespace HotelManageSys.API.Controllers
                 new { id = reservationId, message = "Rezerwacja została utworzona" }
             );
         }
-
+        
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,17 +64,10 @@ namespace HotelManageSys.API.Controllers
                 return BadRequest("Id w URL nie jest takie samo jak w body");
             }
 
-            try
-            {
-                await _mediator.Send(updateCommand);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _mediator.Send(updateCommand);
+            return NoContent();
         }
-
+        
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -80,16 +75,8 @@ namespace HotelManageSys.API.Controllers
         {
             var deleteCommand = new DeleteReservationCommand(id);
 
-            try
-            {
-                await _mediator.Send(deleteCommand);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _mediator.Send(deleteCommand);
+            return NoContent();
         }
     }
 }
-

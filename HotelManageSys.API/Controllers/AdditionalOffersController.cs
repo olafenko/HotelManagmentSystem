@@ -1,11 +1,14 @@
 using HotelManageSys.API.Features.AdditionalOffers.DTO_s;
 using HotelManageSys.API.Features.AdditionalOffers.Messages.Commands;
 using HotelManageSys.API.Features.AdditionalOffers.Messages.Queries;
+using HotelManageSys.API.Models.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManageSys.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AdditionalOffersController : ControllerBase
@@ -17,6 +20,7 @@ namespace HotelManageSys.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER) + "," + nameof(Role.WORKER))]
         [HttpGet]
         [ProducesResponseType(typeof(List<AdditionalOfferDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAdditionalOffers()
@@ -25,16 +29,18 @@ namespace HotelManageSys.API.Controllers
             return Ok(await _mediator.Send(query));
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER) + "," + nameof(Role.WORKER))]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(AdditionalOfferDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAdditionalOfferById(int id)
         {
             var query = new GetAdditionalOfferByIdQuery(id);
-            
+
             return Ok(await _mediator.Send(query));
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER))]
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -49,31 +55,32 @@ namespace HotelManageSys.API.Controllers
             );
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER) + "," + nameof(Role.WORKER))]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateAdditionalOffer(int id, [FromBody] UpdateAdditionalOfferCommand updateCommand)
+        public async Task<IActionResult> UpdateAdditionalOffer(int id,
+            [FromBody] UpdateAdditionalOfferCommand updateCommand)
         {
             if (id != updateCommand.AdditionalOfferId)
             {
                 return BadRequest("Id w URL nie jest takie samo jak w body");
             }
-            
+
             await _mediator.Send(updateCommand);
             return NoContent();
-            
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER) + "," + nameof(Role.WORKER))]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteAdditionalOffer(int id)
         {
             var deleteCommand = new DeleteAdditionalOfferCommand(id);
-            
+
             await _mediator.Send(deleteCommand);
             return NoContent();
         }
     }
 }
-
