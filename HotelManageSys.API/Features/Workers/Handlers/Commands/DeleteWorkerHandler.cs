@@ -1,3 +1,4 @@
+using HotelManageSys.API.Exceptions;
 using HotelManageSys.API.Features.Workers.Messages.Commands;
 using HotelManageSys.API.Features.Workers.Providers;
 using HotelManageSys.API.Features.Workers.Services;
@@ -22,6 +23,8 @@ namespace HotelManageSys.API.Features.Workers.Handlers.Commands
         {
             var worker = await _workerProvider.GetWorkerByIdAsync(request.Id, false, cancellationToken);
 
+            if (worker == null) throw new NotFoundException("Worker", request.Id);
+            
             _logger.LogInformation("Usuwanie pracownika ID: {WorkerId}", request.Id);
 
             await _workerService.DeleteWorker(worker, cancellationToken);

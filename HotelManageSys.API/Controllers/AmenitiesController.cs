@@ -1,12 +1,14 @@
 using HotelManageSys.API.Features.Amenities.DTO_s;
 using HotelManageSys.API.Features.Amenities.Messages.Commands;
 using HotelManageSys.API.Features.Amenities.Messages.Queries;
+using HotelManageSys.API.Models.Enums;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManageSys.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AmenitiesController : ControllerBase
@@ -18,6 +20,7 @@ namespace HotelManageSys.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER) + "," + nameof(Role.WORKER))]
         [HttpGet]
         [ProducesResponseType(typeof(List<AmenityDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAmenities()
@@ -26,6 +29,7 @@ namespace HotelManageSys.API.Controllers
             return Ok(await _mediator.Send(query));
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER) + "," + nameof(Role.WORKER))]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(AmenityDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -38,6 +42,7 @@ namespace HotelManageSys.API.Controllers
             return result != null ? Ok(result) : NotFound($"Udogodnienie o ID {id} nie istnieje");
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER))]
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -52,6 +57,7 @@ namespace HotelManageSys.API.Controllers
             );
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER) + "," + nameof(Role.WORKER))]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,17 +68,11 @@ namespace HotelManageSys.API.Controllers
                 return BadRequest("Id w URL nie jest takie samo jak w body");
             }
 
-            try
-            {
-                await _mediator.Send(updateCommand);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _mediator.Send(updateCommand);
+            return NoContent();
         }
 
+        [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER))]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -80,16 +80,8 @@ namespace HotelManageSys.API.Controllers
         {
             var deleteCommand = new DeleteAmenityCommand(id);
 
-            try
-            {
-                await _mediator.Send(deleteCommand);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _mediator.Send(deleteCommand);
+            return NoContent();
         }
     }
 }
-

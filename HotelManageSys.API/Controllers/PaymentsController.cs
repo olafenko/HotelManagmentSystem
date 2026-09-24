@@ -1,11 +1,14 @@
 using HotelManageSys.API.Features.Payments.DTO_s;
 using HotelManageSys.API.Features.Payments.Messages.Commands;
 using HotelManageSys.API.Features.Payments.Messages.Queries;
+using HotelManageSys.API.Models.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManageSys.API.Controllers
 {
+    [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER) + "," + nameof(Role.WORKER))]
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentsController : ControllerBase
@@ -16,7 +19,7 @@ namespace HotelManageSys.API.Controllers
         {
             _mediator = mediator;
         }
-
+        
         [HttpGet]
         [ProducesResponseType(typeof(List<PaymentDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllPayments()
@@ -24,7 +27,7 @@ namespace HotelManageSys.API.Controllers
             var query = new GetAllPaymentsQuery();
             return Ok(await _mediator.Send(query));
         }
-
+        
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PaymentDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -36,7 +39,7 @@ namespace HotelManageSys.API.Controllers
 
             return Ok(result);
         }
-
+        
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,7 +53,7 @@ namespace HotelManageSys.API.Controllers
                 new { id = paymentId, message = "Płatność została utworzona" }
             );
         }
-
+        
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -61,17 +64,8 @@ namespace HotelManageSys.API.Controllers
                 return BadRequest("Id w URL nie jest takie samo jak w body");
             }
 
-            try
-            {
-                await _mediator.Send(updateCommand);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _mediator.Send(updateCommand);
+            return NoContent();
         }
-        
     }
 }
-

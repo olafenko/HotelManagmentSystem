@@ -1,11 +1,14 @@
 using HotelManageSys.API.Features.Workers.DTO_s;
 using HotelManageSys.API.Features.Workers.Messages.Commands;
 using HotelManageSys.API.Features.Workers.Messages.Queries;
+using HotelManageSys.API.Models.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManageSys.API.Controllers
 {
+    [Authorize(Roles = nameof(Role.ADMIN) + "," + nameof(Role.MANAGER))]
     [Route("api/[controller]")]
     [ApiController]
     public class WorkersController : ControllerBase
@@ -61,15 +64,8 @@ namespace HotelManageSys.API.Controllers
                 return BadRequest("Id w URL nie jest takie samo jak w body");
             }
 
-            try
-            {
-                await _mediator.Send(updateCommand);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _mediator.Send(updateCommand);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
@@ -79,16 +75,8 @@ namespace HotelManageSys.API.Controllers
         {
             var deleteCommand = new DeleteWorkerCommand(id);
 
-            try
-            {
-                await _mediator.Send(deleteCommand);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _mediator.Send(deleteCommand);
+            return NoContent();
         }
     }
 }
-
