@@ -28,6 +28,7 @@ export type RootStackParamList = {
     AddAdditionalOffer: undefined;
     UpdateAdditionalOffer: { additionalOffer: AdditionalOffer};
     
+    Login: undefined;
 }
 
 export type BottomNavigationParamList = {
