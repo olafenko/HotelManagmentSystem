@@ -2,14 +2,14 @@
 import {RootStackParamList} from "../../navigation/types.ts";
 import {Alert, ScrollView, StyleSheet, View} from "react-native";
 import {useState} from "react";
-import {useWorkers} from "../../context/WorkersContext.tsx";
 import {ActivityIndicator, Button, Card, TextInput, useTheme} from "react-native-paper";
+import {useAuth} from "../../context/AuthContext.tsx";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 function LoginScreen({navigation} : Props) {
     const theme = useTheme();
-    const { addWorker } = useWorkers();
+    const {login} = useAuth() 
     
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -44,28 +44,28 @@ function LoginScreen({navigation} : Props) {
             <Card style={styles.card} mode="contained">
                 <Card.Content style={styles.gap}>
 
-                    //inputy do zmiany
-                    <TextInput
-                        label="Login"
-                        mode="outlined"
-                        value={firstName}
-                        onChangeText={setFirstName}
-                        editable={!submitting}
-                        style={styles.input}
-                        outlineColor={theme.colors.outline}
-                        activeOutlineColor={theme.colors.primary}
-                    />
-
-                    <TextInput
-                        label="Hasło"
-                        mode="outlined"
-                        value={lastName}
-                        onChangeText={setLastName}
-                        editable={!submitting}
-                        style={styles.input}
-                        outlineColor={theme.colors.outline}
-                        activeOutlineColor={theme.colors.primary}
-                    />
+                    {/*//inputy do zmiany*/}
+                    {/*<TextInput*/}
+                    {/*    label="Login"*/}
+                    {/*    mode="outlined"*/}
+                    {/*    value={""}*/}
+                    {/*    onChangeText={""}*/}
+                    {/*    editable={!submitting}*/}
+                    {/*    style={styles.input}*/}
+                    {/*    outlineColor={theme.colors.outline}*/}
+                    {/*    activeOutlineColor={theme.colors.primary}*/}
+                    {/*/>*/}
+                    
+                    {/*<TextInput*/}
+                    {/*    label="Hasło"*/}
+                    {/*    mode="outlined"*/}
+                    {/*    value={}*/}
+                    {/*    onChangeText={}*/}
+                    {/*    editable={!submitting}*/}
+                    {/*    style={styles.input}*/}
+                    {/*    outlineColor={theme.colors.outline}*/}
+                    {/*    activeOutlineColor={theme.colors.primary}*/}
+                    {/*/>*/}
 
                     <View style={styles.buttons}>
                         <Button

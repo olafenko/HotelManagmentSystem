@@ -9,7 +9,7 @@ import {
     CreateRoomRequest,
     CreateRoomTypeRequest,
     CreateWorkerRequest,
-    Guest,
+    Guest, LoginRequest,
     Payment, PaymentStatus, Reservation,
     Room,
     RoomType, UpdateAdditionalOfferRequest,
@@ -44,7 +44,6 @@ class ApiService {
         
         try {
             
-            //DO OGARNIECIA RZUCANIE TYCH WYJATKOW
             const response = await fetch(url,config);
             
             const data = await response.json().catch(() => null);
@@ -86,9 +85,7 @@ class ApiService {
             
         }
     }
-    
-    // <--------- ROOMS --------->
-    
+
     async getRooms(): Promise<Room[]> {
         return this.request<Room[]>('/Rooms');
     }
@@ -286,6 +283,13 @@ class ApiService {
     async deleteReservation(id: number) : Promise<void>{
         return this.request<void>(`/Reservations/${id}`, {
             method: "DELETE"
+        });
+    }
+
+    async login(data: LoginRequest) : Promise<string>{
+        return this.request<string>('/Auth/login', {
+            method: "POST",
+            body: JSON.stringify(data),
         });
     }
 

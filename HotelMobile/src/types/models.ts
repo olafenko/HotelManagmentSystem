@@ -237,3 +237,8 @@ export interface CreatePaymentRequest {
     paymentDate?: string;
     reservationId: number;
 }
+
+export interface LoginRequest {
+    login: string,
+    password: string
+}
