@@ -287,12 +287,13 @@ class ApiService {
     }
 
     async login(data: LoginRequest) : Promise<string>{
-        return this.request<string>('/Auth/login', {
+        const response = await this.request<{token: string}>('/Auth/login', {
             method: "POST",
             body: JSON.stringify(data),
         });
+        
+        return response.token;
     }
-
 }
 
 export default new ApiService();

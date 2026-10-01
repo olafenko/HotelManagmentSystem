@@ -19,7 +19,6 @@ function App(): React.JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
 
     return (
-        
             <SafeAreaProvider>
                 <PaperProvider theme={theme}>
                 <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
