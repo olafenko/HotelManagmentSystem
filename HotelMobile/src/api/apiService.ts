@@ -21,6 +21,8 @@ import {
     Worker
 } from "../types/models.ts";
 import {ApiError} from "../types/errors.ts";
+import {useAuth} from "../context/AuthContext.tsx";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 class ApiService {
     
@@ -33,13 +35,22 @@ class ApiService {
     private async request<T>(endpoint: string, options: RequestInit = {}):Promise<T> {
         
         const url = `${this.baseUrl}${endpoint}`;
-
+        const token = await AsyncStorage.getItem("jwt_token");
+        
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        }
+        
+        if(token) {
+            headers['Authorization'] = `Bearer ${token}`; 
+        }
+        
         const config: RequestInit = {
+            ...options,
             headers: {
-                'Content-Type': 'application/json',
+                ...headers,
                 ...options.headers,
             },
-            ...options,
         };
         
         try {

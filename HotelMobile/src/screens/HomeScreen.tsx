@@ -2,11 +2,14 @@
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {HomePageStackParamList} from "../navigation/types.ts";
 import {Button, Text} from "react-native-paper";
+import {useAuth} from "../context/AuthContext.tsx";
 
 type Props = NativeStackScreenProps<HomePageStackParamList, 'Home'>;
 
 function HomeScreen({navigation} : Props ) {
 
+    const {logout} = useAuth();
+    
     return (
         <View style={styles.container}>
             
@@ -16,7 +19,6 @@ function HomeScreen({navigation} : Props ) {
                 <Button icon="star-outline" mode="outlined" style={styles.menuButton} textColor="#C5A059" onPress={() => navigation.navigate('Amenities')}>
                     Udogodnienia
                 </Button>
-
                 <Button icon="account-group" mode="outlined" style={styles.menuButton} textColor="#C5A059" onPress={() => navigation.navigate('Guests')}>
                     Baza gości
                 </Button>
@@ -31,6 +33,9 @@ function HomeScreen({navigation} : Props ) {
 
                 <Button icon="room-service-outline" mode="outlined" style={styles.menuButton} textColor="#C5A059" onPress={() => navigation.navigate('AdditionalOffers')}>
                     Oferty dodatkowe
+                </Button>
+                <Button icon="logout" mode="outlined" style={styles.menuButton} textColor="#C5A059" onPress={logout}>
+                    Wyloguj
                 </Button>
             </View>
         </View>
