@@ -32,13 +32,12 @@ MVP is functional. The project is under development.
 * React Native Paper 
 * Custom Hooks for automated form error mapping
 
-**Engineering & Architectural Decisions:**
+**Architecture:**
 
-* CQRS with MediatR: Strict separation of read and write  operations ensures maximum isolation of business logic. Each Handler has a single responsibility, making the code testable and scalable.
-
-* Pipeline Behaviors (Validation): FluentValidation logic is integrated directly into the MediatR pipeline. Invalid requests are intercepted and rejected globally before they ever reach the Handlers, keeping the Application layer completely clean.
-
-* Automated Error Mapping (Custom Hooks): Frontend error handling is abstracted into custom React hooks. When the API returns a 400 Bad Request containing validation errors, the hook automatically maps these backend errors directly to the corresponding UI form inputs.
+- **CQRS (MediatR)**: Read and write operations are separated. Handlers are small, focused on single tasks, and easy to test.
+- **Global Validation**: FluentValidation is plugged directly into the MediatR pipeline. Bad requests are rejected before they even reach the business logic.
+- **Form Errors**: Custom React Native hooks catch 400 Bad Request responses and automatically map backend validation errors to the specific UI input fields.
+- **Auth**: JWT with Role-Based Access Control on the backend.
 
 **Infrastructure:**
 * Docker & Docker Compose
@@ -73,7 +72,6 @@ The entire backend infrastructure (API & Database) is fully containerized.
 ## TO DO Features
 
 * Sorting and filtering
-* Implement JWT Authentication & Role-Based Access Control
 * Unit and Integration Testing 
 * CI/CD Pipeline (GitLab)
 * App settings (ex. english language, light theme)
